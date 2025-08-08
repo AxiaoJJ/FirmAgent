@@ -1,0 +1,2 @@
+requests
+angr==9.2.1
