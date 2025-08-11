@@ -514,7 +514,7 @@ class LLManalysis():
                         all_pseudocode += f"\n// Function at {hex(func_addr)} (middle function)\n{pseudocode}\n"
                         middle_call_info += f"Call points from {hex(call_chain[i])} to {hex(call_chain[i+1])}: {self.call_to_list(data, chain_points[i])}\n"
                     
-                    # 处理最后的汇函数
+                    # Processing the final sink function
                     sink_func_addr = call_chain[-1]
                     sink_pseudocode = ""
                     sink_to_analyze = list(sinks.values())
