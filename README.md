@@ -72,7 +72,7 @@ This toolkit automates an end-to-end workflow for discovering and validating vul
   pip install -r requirements.txt
   ```
 
-- **Emulation**: QEMU / QEMU-AFL or your preferred rehosting stack
+- **Emulation**: Greenhouse (Details can be found in`https://github.com/sefcom/greenhouse.git`)
 
   - We ship instrumented binaries under `FirmAgent/FuzzingRecord/gh3fuzz/fuzz_bins/qemu/`.
   - Control-flow collector: `libibresolver.so`.
@@ -83,7 +83,7 @@ This toolkit automates an end-to-end workflow for discovering and validating vul
 
 ​	export idat64 = path/to/idat64
 
-​	expoet OPENAI_API_KEY = {OPENAI_API_KEY} or export Deepseek_API_KEY  = {Deepseek_API_KEY}
+​	export OPENAI_API_KEY = {OPENAI_API_KEY} or export Deepseek_API_KEY  = {Deepseek_API_KEY}
 
 ------
 
@@ -206,7 +206,7 @@ python LLMATaint.py \
 
 ## Input/Output Schemas
 
-### `Pre_fuzzing.json` (API definitions)
+### Pre_fuzzing.json (API definitions)
 
 An array of API objects. Minimal fields required by `fuzzer.py`:
 
@@ -230,8 +230,8 @@ An array of API objects. Minimal fields required by `fuzzer.py`:
 
 - **`fuzzing_results.log`** — Human-readable progress and warnings.
 - **`detailed_results.json`** — Line-delimited JSON of each attempt:
-- Source.json — source点地址
-- Indirect_call.json — （caller, callee）
+- **`Source.json`** — source address
+- **`Indirect_call.json`** — （caller, callee）
 
 ------
 
@@ -240,7 +240,7 @@ An array of API objects. Minimal fields required by `fuzzer.py`:
 `fuzzer.py` CLI:
 
 ```
-lua复制编辑--base-url    (str, required) Base URL, e.g., http://10.0.0.2
+--base-url    (str, required) Base URL, e.g., http://10.0.0.2
 --json-file   (str, required) Path to Pre_fuzzing.json
 --delay       (float, default 0.5) Seconds between requests
 --host        (str, required) Host header value (IP or DNS name)
@@ -276,19 +276,19 @@ lua复制编辑--base-url    (str, required) Base URL, e.g., http://10.0.0.2
 
 ## Troubleshooting
 
-- **`No API definitions found`**
+- **`No API definitions found`**:
    Ensure `Pre_fuzzing.json` exists and is valid JSON. Run pre-fuzzing scripts again.
-- **`No parameters found` for an endpoint**
+- **`No parameters found` for an endpoint**:
    Make sure your `request_payload` string includes `<String_value>` placeholders for fuzzable fields.
-- **`Request error: ...` / timeouts**
+- **`Request error: ...` / timeouts**:
   - Verify network reachability from the host to the emulated firmware.
   - Increase timeouts in `send_request` if needed.
   - Check target service actually listens on the base URL.
-- **Target requires auth**
+- **Target requires auth**:
    Add cookies/headers/tokens in `send_request()` or pre-set in `para_results.json`. You can also add an `Authorization` header.
-- **Instrumentation not recording**
+- **Instrumentation not recording**:
    Prefer using `build_fuzz_img.py`. If doing it manually, confirm your loader paths and (if applicable) `LD_PRELOAD`/QEMU plugins are active. Ensure `libibresolver.so` is discoverable by the emulated environment.
-- **LLMATaint cannot find source/indirect call files**
+- **LLMATaint cannot find source/indirect call files**:
    Place both artifacts in the **same directory** as the target binary passed via `-b`.
 
 ------
@@ -296,15 +296,19 @@ lua复制编辑--base-url    (str, required) Base URL, e.g., http://10.0.0.2
 ## FAQ
 
 **Q:** Can I fuzz by device name instead of IP?
+
  **A:** Yes. Pass the device DNS name to both `--base-url` (e.g., `http://device.local`) and `--host device.local`.
 
 **Q:** How do I add new payloads (e.g., SQLi)?
+
  **A:** Extend `self.payloads` in `APIFuzzer.__init__`. Add detection logic (error signatures, timing, reflections) in `analyze_response()`.
 
 **Q:** Can I parallelize fuzzing?
+
  **A:** The provided script is single-process to preserve ordering and throttling. You can shard `Pre_fuzzing.json` by endpoints across multiple processes/containers.
 
 **Q:** Where do logs go?
+
  **A:** Human logs → `fuzzing_results.log`; structured artifacts → `detailed_results.json`.
 
 
@@ -338,9 +342,6 @@ python LLMATaint.py \
   -o ./results/ASUS \
   -m R1
 ```
-
-> Remember to place the **Source addresses** and **indirect call** JSON next to `./bin/httpd-RT-AX56U` before running the agent.
-
 
 
 
