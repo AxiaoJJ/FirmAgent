@@ -24,7 +24,7 @@ Only test targets you own or have explicit written permission to assess. You are
 
 - [Input/Output Schemas](#inputoutput-schemas)
 
-  - [`Pre_fuzzing.json` (API definitions)](#pre_fuzzingjson-api-definitions)
+  - [Pre_fuzzing.json](#pre_fuzzingjson-api-definitions)
   - [Fuzzing output files](#fuzzing-output-files)
 
 - [Configuration Reference](#configuration-reference)
@@ -72,7 +72,7 @@ This toolkit automates an end-to-end workflow for discovering and validating vul
   pip install -r requirements.txt
   ```
 
-- **Emulation**: Greenhouse (Details can be found in`https://github.com/sefcom/greenhouse.git`)
+- **Emulation**: Greenhouse (Details can be found in https://github.com/sefcom/greenhouse.git)
 
   - We ship instrumented binaries under `FirmAgent/FuzzingRecord/gh3fuzz/fuzz_bins/qemu/`.
   - Control-flow collector: `libibresolver.so`.
