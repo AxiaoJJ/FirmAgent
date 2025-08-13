@@ -109,7 +109,6 @@ This integrates the instrumentation and supporting binaries into the emulation i
 
 ```
 python fuzzer.py \
-  --base-url http://{target_ip_or_domain} \
   --json-file Pre_fuzzing.json \
   --delay 0.5 \
   --host {target_ip_or_domain}
@@ -168,13 +167,11 @@ Run the generic fuzzer against your re-hosted device:
 
 ```
 python fuzzer.py \
-  --base-url http://{target_ip_or_domain} \
   --json-file Pre_fuzzing.json \
   --delay 0.5 \
   --host {target_ip_or_domain}
 ```
 
-- `--base-url` — Base URL for the target (scheme required).
 - `--json-file` — Pre-fuzzing output containing API definitions.
 - `--delay` — Inter-request sleep to avoid rate-limits / WAFs.
 - `--host` — Value for the `Host` header (supports SNI / vhosts).
@@ -240,7 +237,6 @@ An array of API objects. Minimal fields required by `fuzzer.py`:
 `fuzzer.py` CLI:
 
 ```
---base-url    (str, required) Base URL, e.g., http://10.0.0.2
 --json-file   (str, required) Path to Pre_fuzzing.json
 --delay       (float, default 0.5) Seconds between requests
 --host        (str, required) Host header value (IP or DNS name)
@@ -295,10 +291,6 @@ An array of API objects. Minimal fields required by `fuzzer.py`:
 
 ## FAQ
 
-**Q:** Can I fuzz by device name instead of IP?
-
- **A:** Yes. Pass the device DNS name to both `--base-url` (e.g., `http://device.local`) and `--host device.local`.
-
 **Q:** How do I add new payloads (e.g., SQLi)?
 
  **A:** Extend `self.payloads` in `APIFuzzer.__init__`. Add detection logic (error signatures, timing, reflections) in `analyze_response()`.
@@ -326,10 +318,9 @@ python build_fuzz_img.py
 
 ```
 python fuzzer.py \
-  --base-url http://10.3.16.201 \
   --json-file Pre_fuzzing.json \
   --delay 0.5 \
-  --host 10.3.16.201
+  --host 192.168.0.1
 ```
 
 **Run taint-to-PoC agent:**
